@@ -3,6 +3,17 @@
 Engineering workflows maintained by Akin Shonibare: simple designs, efficient
 systems, fast incremental delivery, and concise pull requests.
 
+## Global engineering defaults
+
+`global/engineering-defaults.md` applies simplicity, efficiency, speed, and concise
+writing to every coding task. The skills add deeper workflows when relevant.
+Install the defaults into Codex's global `AGENTS.md` with `--global` below.
+
+The installer preserves existing global instructions and updates only its marked
+engineering-defaults block. Re-run it after changing the versioned defaults.
+It honors `CODEX_HOME`, or accepts `--codex-home /path/to/profile`.
+Start a new Codex session to load changed global instructions.
+
 ## Owned skills
 
 | Skill | When to use it |
@@ -19,8 +30,8 @@ use their own invocation and discovery mechanisms.
 ```sh
 git clone --recurse-submodules https://github.com/akinshonibare/agent-skills.git
 cd agent-skills
-python3 scripts/install.py --dry-run
-python3 scripts/install.py
+python3 scripts/install.py --global --dry-run
+python3 scripts/install.py --global
 ```
 
 The installer links the two owned skills into `~/.agents/skills/`, Codex's supported
