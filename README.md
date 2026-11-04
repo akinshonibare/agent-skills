@@ -7,12 +7,18 @@ systems, fast incremental delivery, and concise pull requests.
 
 `global/engineering-defaults.md` applies simplicity, efficiency, speed, and concise
 writing to every coding task. The skills add deeper workflows when relevant.
-Install the defaults into Codex's global `AGENTS.md` with `--global` below.
+Install the defaults for Codex, Claude Code, or both with `--global` below.
 
 The installer preserves existing global instructions and updates only its marked
-engineering-defaults block. Re-run it after changing the versioned defaults.
-It honors `CODEX_HOME`, or accepts `--codex-home /path/to/profile`.
-Start a new Codex session to load changed global instructions.
+engineering-defaults block. Codex receives a copy in its global `AGENTS.md`;
+re-run the installer after changing the versioned defaults. Claude Code receives
+an import in its global `CLAUDE.md`, so future sessions read the maintained source
+directly. Keep this checkout at its installed path, or re-run the installer after
+moving it.
+
+The installer honors `CODEX_HOME` and `CLAUDE_CONFIG_DIR`, or accepts
+`--codex-home /path/to/profile` and `--claude-home /path/to/profile`.
+Start a new session to load changed global instructions.
 
 ## Owned skills
 
@@ -22,8 +28,8 @@ Start a new Codex session to load changed global instructions.
 | `engineering-pr` | Prepare or revise a reviewable PR and its description, respecting the repository's template. |
 
 Skills can activate when a task matches their descriptions, or be invoked explicitly
-with `$principal-engineering-design` or `$engineering-pr` in Codex. Other agents
-use their own invocation and discovery mechanisms.
+with `$principal-engineering-design` or `$engineering-pr` in Codex, and
+`/principal-engineering-design` or `/engineering-pr` in Claude Code.
 
 ## Local setup
 
@@ -34,13 +40,34 @@ python3 scripts/install.py --global --dry-run
 python3 scripts/install.py --global
 ```
 
-The installer links the two owned skills into `~/.agents/skills/`, Codex's supported
-user-wide discovery location. It refuses to replace existing files or links to
-other sources. Running it again preserves correct links. The skills become
-available on the next turn; restart Codex if discovery does not refresh.
+These commands default to Codex. To install for Claude Code, use:
+
+```sh
+python3 scripts/install.py --agent claude --global --dry-run
+python3 scripts/install.py --agent claude --global
+```
+
+Use `--agent both --global` to configure both agents together. Owned skills are
+linked into `~/.agents/skills/` for Codex and `~/.claude/skills/` for Claude Code
+(or the configured Claude profile). Both read the same skill source directories.
+The installer refuses to replace existing files or links to other sources, checks
+all selected destinations before writing, and preserves correct links on repeat
+runs. Skills are available on the next turn; restart the agent if discovery does
+not refresh.
+
+With the devx launchers, start a fresh session using `devx claude` or `devx codex`.
+The installer configures each agent's instruction and skill files; it does not
+modify devx or its managed configuration.
+
+In Claude Code, use `/skills` to check discovery and `/context all` to confirm the
+global `CLAUDE.md` loaded. These local links configure Claude Code on this machine;
+they do not upload skills to claude.ai, Cowork, or cloud sessions. See the official
+[skill loading documentation](https://code.claude.com/docs/en/skills) and
+[instruction imports](https://code.claude.com/docs/en/memory).
 
 Use `--dest /path/to/another/agents/skill-directory` for another agent's documented
-discovery location. This tool only installs files; it does not configure that agent.
+discovery location. Without `--global`, this tool only links skills. `--global`
+configures the selected agent's instruction file, regardless of `--dest`.
 
 ## Independently maintained skills
 
@@ -96,8 +123,9 @@ git check-ignore local/skills/<name>/SKILL.md
 ```
 
 Private skills are not installed by default. Other checkouts need their own local
-files. The general skills consult the target project's instructions and templates;
-they do not embed internal company policies or replace project conventions.
+files. Add `--agent claude` when explicitly installing a selected private or upstream
+skill for Claude Code. The general skills consult the target project's instructions
+and templates; they do not embed internal company policies or replace project conventions.
 
 ## Checks
 
