@@ -71,9 +71,14 @@ configures the selected agent's instruction file, regardless of `--dest`.
 
 ## Independently maintained skills
 
-`upstream/mattpocock-skills` is a Git submodule. Its source and license remain
-upstream-owned, and the parent repository pins the exact revision. Fetching it
-does not enable its skills or run its setup workflow.
+Each folder under `upstream/` is a Git submodule. Its source and license remain
+upstream-owned, and the parent repository pins the exact revision. Fetching a
+collection does not enable its skills or run its setup workflow.
+
+| Collection | Source | Notable skills |
+| --- | --- | --- |
+| `upstream/mattpocock-skills` | [mattpocock/skills](https://github.com/mattpocock/skills) | Engineering workflows such as `codebase-design`. |
+| `upstream/caldoai-skills` | [caldoai/skills](https://github.com/caldoai/skills) | `untangle-codebase`: a whole-codebase refactor that removes hidden links, needless links, surplus, and special cases. |
 
 ```sh
 git submodule update --init
@@ -84,7 +89,12 @@ Install a selected upstream skill only when you want its workflow. For example:
 
 ```sh
 python3 scripts/install.py --skill upstream/mattpocock-skills/skills/engineering/codebase-design
+python3 scripts/install.py --agent claude --skill upstream/caldoai-skills/skills/untangle-codebase
 ```
+
+`untangle-codebase` sets `disable-model-invocation`, so it runs only when invoked
+explicitly with `/untangle-codebase` in Claude Code. It refactors an entire
+codebase in one pass, so run it on a dedicated branch and review the result.
 
 Read the skill and its dependencies first: some upstream skills call other skills,
 update project documents or issue trackers, or prescribe their own PR format.
@@ -108,8 +118,9 @@ git commit -m "Update Matt Pocock skills"
 ```
 
 Installed links follow that checkout, so an update also changes any selected
-upstream skills. Add other collections with `git submodule add <url> upstream/<name>`
-and install only the skill folders you select.
+upstream skills. The same commands work for `upstream/caldoai-skills`. Add other
+collections with `git submodule add <url> upstream/<name>` and install only the
+skill folders you select.
 
 ## Private local guidance
 
